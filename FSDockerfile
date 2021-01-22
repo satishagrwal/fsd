@@ -2,17 +2,46 @@ FROM debian:buster-slim
 
 LABEL maintainer="satish Agarwal <satish.agrwal@gmail.com>"
 
-RUN apt-get update && \
-apt-get dist-upgrade -y && \
-apt-get install -y --no-install-recommends curl gnupg gnupg2 lsb-release && \
-curl -k https://files.freeswitch.org/repo/deb/debian-release/fsstretch-archive-keyring.asc | apt-key add - && \
-echo 'deb http://files.freeswitch.org/repo/deb/debian-release/ buster main' > /etc/apt/sources.list.d/freeswitch.list && \
-apt-get update && \
+RUN echo "APT::Install-Recommends "false";" > /etc/apt/apt.conf \
+ && echo "APT::Install-Suggests "false";" >> /etc/apt/apt.conf \
+ && apt-get -qq update \
+ \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -yqq --no-install-recommends --no-install-suggests \
+                                     gnupg \
+                                     gnupg2 \
+                                     curl \
+                                     wget \
+                                     lsb-release \
+                                     ca-certificates \
+ && wget -O - https://files.freeswitch.org/repo/deb/debian-release/fsstretch-archive-keyring.asc | apt-key add - \
+ && echo "deb http://files.freeswitch.org/repo/deb/debian-release/ `lsb_release -sc` main" > /etc/apt/sources.list.d/freeswitch.list \
+ && echo "deb-src http://files.freeswitch.org/repo/deb/debian-release/ `lsb_release -sc` main" >> /etc/apt/sources.list.d/freeswitch.list \
+ \
+ && apt-get -qq update \
+ \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
+                                     freeswitch \
+                                     freeswitch-conf-vanilla \
+                                     freeswitch-mod-commands \
+                                     freeswitch-mod-conference \
+                                     freeswitch-mod-console \
+                                     freeswitch-mod-dptools \
+                                     freeswitch-mod-directory \
+                                     freeswitch-mod-dialplan-xml \
+                                     freeswitch-mod-curl \
+                                     freeswitch-mod-dialplan-directory \
+                                     freeswitch-mod-esl \
+                                     freeswitch-mod-event-socket \
+                                     freeswitch-mod-hash \
+                                     freeswitch-mod-sofia \
+ \
+ && DEVELOPMENT_PACKAGES=`dpkg -l|grep '\-dev'|awk '{print $2}'|xargs` \
+ && DEBIAN_FRONTEND=noninteractive apt-get --yes purge \
+      ${DEVELOPMENT_PACKAGES} 
 
-apt-get install -y --no-install-recommends freeswitch-conf-curl freeswitch-mod-b64 freeswitch-mod-blacklist freeswitch-mod-cdr-csv freeswitch-mod-cdr-sqlite freeswitch-mod-cidlookup freeswitch-mod-commands freeswitch-mod-conference freeswitch-mod-console freeswitch-mod-curl freeswitch-mod-db freeswitch-mod-dialplan-xml freeswitch-mod-dptools freeswitch-mod-enum freeswitch-mod-event-socket freeswitch-mod-expr freeswitch-mod-fifo freeswitch-mod-format-cdr freeswitch-mod-fsv freeswitch-mod-g723-1 freeswitch-mod-g729 freeswitch-mod-graylog2 freeswitch-mod-hash freeswitch-mod-httapi freeswitch-mod-json-cdr freeswitch-mod-local-stream freeswitch-mod-logfile freeswitch-mod-loopback freeswitch-mod-lua freeswitch-mod-native-file freeswitch-mod-opus freeswitch-mod-posix-timer freeswitch-mod-prefix freeswitch-mod-python freeswitch-mod-radius-cdr freeswitch-mod-random freeswitch-mod-rtc freeswitch-mod-sndfile freeswitch-mod-snmp freeswitch-mod-sofia freeswitch-mod-spandsp freeswitch-mod-spy freeswitch-mod-syslog freeswitch-mod-timerfd freeswitch-mod-tone-stream freeswitch-mod-valet-parking freeswitch-mod-xml-cdr freeswitch-mod-xml-curl freeswitch-mod-xml-rpc freeswitch-mod-yaml freeswitch-timezones freeswitch-conf-vanilla freeswitch freeswitch-mod-av dumb-init freeswitch-mod-v8 curl
 
-#debug tools
-RUN apt-get install -y vim net-tools less gnupg gdb procps
+#Debug tools
+RUN apt-get install -y vim net-tools less gnupg gdb procps dos2unix
 
 #Disable the example gateway and the IPv6 SIP profiles
 RUN set -ex; \
@@ -22,11 +51,11 @@ RUN set -ex; \
     mv sip_profiles/internal-ipv6.xml sip_profiles/internal-ipv6.xml.noload
 
 #Disable the default sip user's profile
-RUN set -ex; \
-    cd /etc/freeswitch/directory/default; \
-    mv 1005.xml 1005.xml.noload; \
-    mv 1006.xml 1006.xml.noload; \
-    mv 1007.xml 1007.xml.noload
+#RUN set -ex; \
+#    cd /etc/freeswitch/directory/default; \
+#    mv 1005.xml 1005.xml.noload; \
+#    mv 1006.xml 1006.xml.noload; \
+#    mv 1007.xml 1007.xml.noload
 
 #Run config changes
 COPY configs/updatefs.sh /
@@ -34,16 +63,13 @@ COPY configs/updatefs.sh /
 #Convert window file to unix by removing ^M
 RUN  dos2unix /updatefs.sh
 
-RUN /updatefs.sh
+#RUN /updatefs.sh
 #RUN rm /updatefs.sh
 
 #add user specific profile
 COPY configs/testplivo1.xml /etc/freeswitch/directory/default/
 COPY configs/testplivo2.xml /etc/freeswitch/directory/default/
 
-
-#add run.sh
-#COPY run.sh /
 
 #ENTRYPOINT ["/run.sh"]
 #CMD ["/usr/bin/freeswitch", "-nonat", "-nf", "-nc"]
