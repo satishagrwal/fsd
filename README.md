@@ -22,6 +22,4 @@ Your docker freeswitch is ready to use.
 
 If you want to use linux based docker container, you have to run below command to build image. It will do everything for you like image creation and docker execution with port.
 
-Build Image:
--------------
 docker build -t fsd . -f FSDockerfile
