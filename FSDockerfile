@@ -41,7 +41,7 @@ RUN echo "APT::Install-Recommends "false";" > /etc/apt/apt.conf \
 
 
 #Debug tools
-RUN apt-get install -y vim net-tools less gnupg gdb procps dos2unix
+RUN apt-get install -y vim net-tools less gnupg gdb procps dos2unix dnsutils iputils-ping
 
 #Disable the example gateway and the IPv6 SIP profiles
 RUN set -ex; \
@@ -51,11 +51,28 @@ RUN set -ex; \
     mv sip_profiles/internal-ipv6.xml sip_profiles/internal-ipv6.xml.noload
 
 #Disable the default sip user's profile
-#RUN set -ex; \
-#    cd /etc/freeswitch/directory/default; \
-#    mv 1005.xml 1005.xml.noload; \
-#    mv 1006.xml 1006.xml.noload; \
-#    mv 1007.xml 1007.xml.noload
+RUN set -ex; \
+    cd /etc/freeswitch/directory/default; \
+    mv 1000.xml 1000.xml.noload; \
+    mv 1001.xml 1001.xml.noload; \
+    mv 1002.xml 1002.xml.noload; \
+    mv 1003.xml 1003.xml.noload; \
+    mv 1004.xml 1004.xml.noload; \
+    mv 1005.xml 1005.xml.noload; \
+    mv 1006.xml 1006.xml.noload; \
+    mv 1007.xml 1007.xml.noload; \
+    mv 1008.xml 1008.xml.noload; \
+    mv 1009.xml 1009.xml.noload; \
+    mv 1010.xml 1010.xml.noload; \
+    mv 1011.xml 1011.xml.noload; \
+    mv 1012.xml 1012.xml.noload; \
+    mv 1013.xml 1013.xml.noload; \
+    mv 1014.xml 1014.xml.noload; \
+    mv 1015.xml 1015.xml.noload; \
+    mv 1016.xml 1016.xml.noload; \
+    mv 1017.xml 1017.xml.noload; \
+    mv 1018.xml 1018.xml.noload; \
+    mv 1019.xml 1019.xml.noload
 
 #Run config changes
 COPY configs/updatefs.sh /
@@ -64,12 +81,12 @@ COPY configs/updatefs.sh /
 RUN  dos2unix /updatefs.sh
 
 #RUN /updatefs.sh
-#RUN rm /updatefs.sh
+RUN rm /updatefs.sh
 
 #add user specific profile
 COPY configs/testplivo1.xml /etc/freeswitch/directory/default/
 COPY configs/testplivo2.xml /etc/freeswitch/directory/default/
 
 
-#ENTRYPOINT ["/run.sh"]
-#CMD ["/usr/bin/freeswitch", "-nonat", "-nf", "-nc"]
+ENTRYPOINT ["/run.sh"]
+CMD ["/usr/bin/freeswitch", "-nonat", "-nf", "-nc"]
