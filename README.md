@@ -24,4 +24,4 @@ If you want to use linux based docker container, you have to run below command t
 
 1) Go to fsd folder
 2) Execute below command
-root@f7425f5d0091:/fsd#./run-docker.sh
+root@f7425f5d0091:/fsd#./docker-run.sh
