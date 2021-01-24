@@ -50,6 +50,11 @@ RUN set -ex; \
     mv sip_profiles/external-ipv6.xml sip_profiles/external-ipv6.xml.noload; \
     mv sip_profiles/internal-ipv6.xml sip_profiles/internal-ipv6.xml.noload
 
+#Disable the default sip user's group
+RUN set -ex; \
+    cd /etc/freeswitch/directory; \
+    mv default.xml default.xml.noload
+       
 #Disable the default sip user's profile
 RUN set -ex; \
     cd /etc/freeswitch/directory/default; \
@@ -86,5 +91,8 @@ RUN rm /updatefs.sh
 #add user specific profile
 COPY configs/testplivo1.xml /etc/freeswitch/directory/default/
 COPY configs/testplivo2.xml /etc/freeswitch/directory/default/
+
+#added default file to remove default user's group
+COPY configs/default.xml /etc/freeswitch/directory/
 
 ENTRYPOINT ["/usr/bin/freeswitch"]
