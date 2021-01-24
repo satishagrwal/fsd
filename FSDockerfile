@@ -87,6 +87,4 @@ RUN rm /updatefs.sh
 COPY configs/testplivo1.xml /etc/freeswitch/directory/default/
 COPY configs/testplivo2.xml /etc/freeswitch/directory/default/
 
-
-ENTRYPOINT ["/run.sh"]
-CMD ["/usr/bin/freeswitch", "-nonat", "-nf", "-nc"]
+ENTRYPOINT ["/usr/bin/freeswitch"]
