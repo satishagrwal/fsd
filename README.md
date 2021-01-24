@@ -1,7 +1,9 @@
 Docker Freeswitch
 -----------------
-This project can be used to deploy a FreeSWITCH server inside a Docker container.
+This project used to deploy a FreeSWITCH server inside a Docker container and inplement following scenario
 
+1) Only allow to register testplivo1 and testplivo2.
+2) Server can route calls to and from registered SIP endpoints.
 
 A)If you want to use window based docker container. Please follow below steps
 
@@ -34,6 +36,6 @@ docker exec -it <container_id>  /bin/bash
 Configuration
 -------------
 1) Disable the example gateway and the IPv6 SIP profiles.
-2) Disable all default sip user's profile and added only two profiles(i.e testplivo1 and testplivo2).
+2) Disable all default sip user's profile and added support to add testplivo1 and testplivo user.
 3) Changed default user password.
-4) Configure to restrict blind registration.
+4) Configured to restrict blind registration.
