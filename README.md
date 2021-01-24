@@ -1,10 +1,9 @@
 Docker Freeswitch
 -----------------
+This project can be used to deploy a FreeSWITCH server inside a Docker container.
 
-Build a SIP-based telephony system capable of routing calls to and from SIP
-endpoints registered on the FreeSWITCH server.
 
-If you want to use window based docker container. Please follow below steps
+A)If you want to use window based docker container. Please follow below steps
 
 Setup:
 -----------------
@@ -20,8 +19,19 @@ docker run -ti -p 2223:22 -p 5060:5060/tcp -p 5060:5060/udp -p 16384:16384/udp -
 
 Your docker freeswitch is ready to use. you can use by registering to softphone with user testplivo1 and testplivo2. This docker image will only allow to register these to profile only.
 
-If you want to use linux based docker container, you have to run below command to build image. It will do everything for you like image creation and docker execution with port.
+B)If you want to use linux based docker container, you have to run below command to build image. It will do everything for you like image creation and docker execution with port.
 
 1) Go to fsd folder
 2) Execute below command
 root@f7425f5d0091:/fsd#./docker-run.sh
+
+Shell access
+------------
+docker exec -it <container_id>  /bin/bash
+
+Configuration
+-------------
+1) Disable the example gateway and the IPv6 SIP profiles.
+2) Disable all default sip user's profile and added only two profiles(i.e testplivo1 and testplivo2).
+3) changed default user password.
+4) Configure to restrict blind registration.
