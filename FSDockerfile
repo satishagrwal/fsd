@@ -1,0 +1,98 @@
+FROM debian:buster-slim
+
+LABEL maintainer="satish Agarwal <satish.agrwal@gmail.com>"
+
+RUN echo "APT::Install-Recommends "false";" > /etc/apt/apt.conf \
+ && echo "APT::Install-Suggests "false";" >> /etc/apt/apt.conf \
+ && apt-get -qq update \
+ \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -yqq --no-install-recommends --no-install-suggests \
+                                     gnupg \
+                                     gnupg2 \
+                                     curl \
+                                     wget \
+                                     lsb-release \
+                                     ca-certificates \
+ && wget -O - https://files.freeswitch.org/repo/deb/debian-release/fsstretch-archive-keyring.asc | apt-key add - \
+ && echo "deb http://files.freeswitch.org/repo/deb/debian-release/ `lsb_release -sc` main" > /etc/apt/sources.list.d/freeswitch.list \
+ && echo "deb-src http://files.freeswitch.org/repo/deb/debian-release/ `lsb_release -sc` main" >> /etc/apt/sources.list.d/freeswitch.list \
+ \
+ && apt-get -qq update \
+ \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
+                                     freeswitch \
+                                     freeswitch-conf-vanilla \
+                                     freeswitch-mod-commands \
+                                     freeswitch-mod-conference \
+                                     freeswitch-mod-console \
+                                     freeswitch-mod-dptools \
+                                     freeswitch-mod-directory \
+                                     freeswitch-mod-dialplan-xml \
+                                     freeswitch-mod-curl \
+                                     freeswitch-mod-dialplan-directory \
+                                     freeswitch-mod-esl \
+                                     freeswitch-mod-event-socket \
+                                     freeswitch-mod-hash \
+                                     freeswitch-mod-sofia \
+ \
+ && DEVELOPMENT_PACKAGES=`dpkg -l|grep '\-dev'|awk '{print $2}'|xargs` \
+ && DEBIAN_FRONTEND=noninteractive apt-get --yes purge \
+      ${DEVELOPMENT_PACKAGES} 
+
+
+#Debug tools
+RUN apt-get install -y vim net-tools less gnupg gdb procps dos2unix dnsutils iputils-ping
+
+#Disable the example gateway and the IPv6 SIP profiles
+RUN set -ex; \
+    cd /etc/freeswitch; \
+    mv directory/default/example.com.xml directory/default/example.com.xml.noload; \
+    mv sip_profiles/external-ipv6.xml sip_profiles/external-ipv6.xml.noload; \
+    mv sip_profiles/internal-ipv6.xml sip_profiles/internal-ipv6.xml.noload
+
+#Disable the default sip user's group
+RUN set -ex; \
+    cd /etc/freeswitch/directory; \
+    mv default.xml default.xml.noload
+       
+#Disable the default sip user's profile
+RUN set -ex; \
+    cd /etc/freeswitch/directory/default; \
+    mv 1000.xml 1000.xml.noload; \
+    mv 1001.xml 1001.xml.noload; \
+    mv 1002.xml 1002.xml.noload; \
+    mv 1003.xml 1003.xml.noload; \
+    mv 1004.xml 1004.xml.noload; \
+    mv 1005.xml 1005.xml.noload; \
+    mv 1006.xml 1006.xml.noload; \
+    mv 1007.xml 1007.xml.noload; \
+    mv 1008.xml 1008.xml.noload; \
+    mv 1009.xml 1009.xml.noload; \
+    mv 1010.xml 1010.xml.noload; \
+    mv 1011.xml 1011.xml.noload; \
+    mv 1012.xml 1012.xml.noload; \
+    mv 1013.xml 1013.xml.noload; \
+    mv 1014.xml 1014.xml.noload; \
+    mv 1015.xml 1015.xml.noload; \
+    mv 1016.xml 1016.xml.noload; \
+    mv 1017.xml 1017.xml.noload; \
+    mv 1018.xml 1018.xml.noload; \
+    mv 1019.xml 1019.xml.noload
+
+#Run config changes
+COPY configs/updatefs.sh /
+
+#Convert window file to unix by removing ^M
+RUN  dos2unix /updatefs.sh
+
+#RUN /updatefs.sh
+RUN rm /updatefs.sh
+
+#add user specific profile
+COPY configs/testplivo1.xml /etc/freeswitch/directory/default/
+COPY configs/testplivo2.xml /etc/freeswitch/directory/default/
+
+#added default file to remove default user's group
+COPY configs/default.xml /etc/freeswitch/directory/
+
+ENTRYPOINT ["/usr/bin/freeswitch"]
