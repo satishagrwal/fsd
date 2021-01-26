@@ -1,13 +1,16 @@
 <include>
-  <user id="testplivo1" number-alias="1001">
+  <user id="testplivo1">
     <params>
-      <param name="password" value="freeswitchplivo7809"/>
+      <param name="password" value="$${default_password}"/>
     </params>
     <variables>
-      <variable name="effective_caller_id_name" value="Extension 1001"/>
-      <variable name="effective_caller_id_number" value="1001"/>
+      <variable name="toll_allow" value="domestic,international,local"/>
+      <variable name="user_context" value="default"/>
+      <variable name="effective_caller_id_name" value="testplivo1"/>
+      <variable name="effective_caller_id_number" value="1000"/>
       <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
       <variable name="outbound_caller_id_number" value="$${outbound_caller_id}"/>
+      <variable name="callgroup" value="techsupport"/>
     </variables>
   </user>
 </include>
