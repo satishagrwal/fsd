@@ -33,6 +33,10 @@ If you want to access shell of container, execute below command
 
 docker exec -it <container_id>  /bin/bash
 
+Call Test
+----------------
+If user testplivo2 dial 7891, freeswitch will connect this to testplivo1 user and vice-versa
+
 Configuration
 -------------
 1) Disable the example gateway and the IPv6 SIP profiles.
