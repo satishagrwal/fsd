@@ -41,7 +41,7 @@
       </condition>
     </extension>
 
-    <extension name="TestPlivo1">
+    <extension name="TestSatish1">
       <condition field="destination_number" expression="^7891$">
 	<action application="set" data="ringback=${us-ring}"/>
 	<action application="set" data="call_timeout=30"/>
@@ -52,7 +52,7 @@
       </condition>
     </extension>
 
- <extension name="TestPlivo2">
+ <extension name="TestSatish2">
       <condition field="destination_number" expression="^7892$">
 	<action application="set" data="ringback=${us-ring}"/>
 	<action application="set" data="call_timeout=30"/>
