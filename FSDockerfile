@@ -94,8 +94,8 @@ RUN  dos2unix /updatefs.sh
 RUN rm /updatefs.sh
 
 #add user specific profile
-COPY configs/testplivo1.xml /etc/freeswitch/directory/default/
-COPY configs/testplivo2.xml /etc/freeswitch/directory/default/
+COPY configs/testSatish1.xml /etc/freeswitch/directory/default/
+COPY configs/testSatish2.xml /etc/freeswitch/directory/default/
 
 #added default file to remove default user's group
 COPY configs/default.xml /etc/freeswitch/directory/
