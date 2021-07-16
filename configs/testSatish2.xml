@@ -1,12 +1,12 @@
 <include>
-  <user id="testplivo2">
+  <user id="testSatish2">
     <params>
       <param name="password" value="$${default_password}"/>
     </params>
     <variables>
       <variable name="toll_allow" value="domestic,international,local"/>
       <variable name="user_context" value="public"/>
-      <variable name="effective_caller_id_name" value="testplivo2"/>
+      <variable name="effective_caller_id_name" value="testSatish2"/>
       <variable name="effective_caller_id_number" value="7892"/>
       <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
       <variable name="outbound_caller_id_number" value="$${outbound_caller_id}"/>
